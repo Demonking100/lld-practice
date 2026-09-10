@@ -1,0 +1,60 @@
+{
+  "problems": [
+    {
+      "id": "prob_parking_lot",
+      "title": "Design a Parking Lot",
+      "description": "Design an automated multi-floor parking lot system supporting different vehicle types (Car, Bike, Truck). The system should handle spot allocation, entry/exit ticket generation, and parking fee calculation.",
+      "expectedEntities": [
+        "Vehicle",
+        "Slot",
+        "Spot",
+        "ParkingLot",
+        "Ticket"
+      ],
+      "createdAt": "2026-09-10T04:58:44.624Z"
+    },
+    {
+      "id": "prob_elevator",
+      "title": "Design an Elevator System",
+      "description": "Design an elevator control system managing multiple elevator cars across multiple floors. The system should efficiently dispatch elevator requests, control floor movement, handle direction state, and manage internal/external request queues.",
+      "expectedEntities": [
+        "Elevator",
+        "Floor",
+        "Request",
+        "Controller"
+      ],
+      "createdAt": "2026-09-10T04:58:44.625Z"
+    }
+  ],
+  "attempts": [
+    {
+      "id": "att_1789016324884_9l7cm",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "Class ParkingLot with Vehicle and Slot",
+      "feedback": {
+        "completenessScore": 40,
+        "structureScore": 42,
+        "matchedEntities": [
+          "Vehicle",
+          "Slot",
+          "ParkingLot"
+        ],
+        "missingEntities": [
+          "Spot",
+          "Ticket"
+        ],
+        "comments": [
+          "Identified core domain entities: Vehicle, Slot, ParkingLot.",
+          "Consider defining or elaborating on missing key entities: Spot, Ticket.",
+          "Good structure-mindedness! Utilized key structural concepts: class.",
+          "Your submission is quite brief. Expanding on class responsibilities and method signatures will improve your score."
+        ]
+      },
+      "createdAt": "2026-09-10T04:58:44.884Z",
+      "updatedAt": "2026-09-10T04:58:45.457Z"
+    }
+  ]
+}

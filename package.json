@@ -1,0 +1,13 @@
+{
+  "name": "lld-practice-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LLD Practice Platform - Low-Level Design Practice & Feedback MVP",
+  "scripts": {
+    "start": "npm run start:backend",
+    "start:backend": "cd backend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "test": "cd backend && npm test"
+  }
+}
