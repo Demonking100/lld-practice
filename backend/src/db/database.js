@@ -8,14 +8,32 @@ const INITIAL_PROBLEMS = [
   {
     id: 'prob_parking_lot',
     title: 'Design a Parking Lot',
-    description: 'Design an automated multi-floor parking lot system supporting different vehicle types (Car, Bike, Truck). The system should handle spot allocation, entry/exit ticket generation, and parking fee calculation.',
+    description: `Design an automated multi-floor parking lot system for urban commercial buildings.
+
+Key Requirements:
+- Support multiple vehicle types (Car, Bike, Truck) with designated spot sizes per floor.
+- Track available and occupied spots per floor in real-time.
+- Issue entry tickets with spot assignment and timestamp; calculate fees on exit based on duration.
+- Gracefully handle full lot edge cases when no spots are available.
+
+What a good submission should cover:
+Your design should show how vehicles get matched to spots, how the system tracks occupancy, and how fees are calculated for different vehicle types.`,
     expectedEntities: ['Vehicle', 'Slot', 'Spot', 'ParkingLot', 'Ticket'],
     createdAt: new Date().toISOString()
   },
   {
     id: 'prob_elevator',
     title: 'Design an Elevator System',
-    description: 'Design an elevator control system managing multiple elevator cars across multiple floors. The system should efficiently dispatch elevator requests, control floor movement, handle direction state, and manage internal/external request queues.',
+    description: `Design a smart elevator control system managing multi-car dispatching in a high-rise building.
+
+Key Requirements:
+- Control multiple elevators across multiple floors.
+- Process internal destination buttons and external floor hall requests (up/down).
+- Efficiently dispatch requests to optimal elevators to minimize wait times.
+- Manage movement states (Idle, Moving Up, Moving Down), door logic, and queue priorities.
+
+What a good submission should cover:
+Your design should cover request dispatching logic, state transitions, queue handling, and class relationships between controllers, floors, and elevators.`,
     expectedEntities: ['Elevator', 'Floor', 'Request', 'Controller'],
     createdAt: new Date().toISOString()
   }
@@ -34,12 +52,10 @@ class Database {
       };
       this.saveData(initialData);
     } else {
-      // Ensure seed problems exist even if data.json was pre-existing
+      // Ensure seed problems have updated rich descriptions while preserving existing attempts
       const data = this.loadData();
-      if (!data.problems || data.problems.length === 0) {
-        data.problems = INITIAL_PROBLEMS;
-        this.saveData(data);
-      }
+      data.problems = INITIAL_PROBLEMS;
+      this.saveData(data);
     }
   }
 

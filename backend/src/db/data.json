@@ -3,7 +3,7 @@
     {
       "id": "prob_parking_lot",
       "title": "Design a Parking Lot",
-      "description": "Design an automated multi-floor parking lot system supporting different vehicle types (Car, Bike, Truck). The system should handle spot allocation, entry/exit ticket generation, and parking fee calculation.",
+      "description": "Design an automated multi-floor parking lot system for urban commercial buildings.\n\nKey Requirements:\n- Support multiple vehicle types (Car, Bike, Truck) with designated spot sizes per floor.\n- Track available and occupied spots per floor in real-time.\n- Issue entry tickets with spot assignment and timestamp; calculate fees on exit based on duration.\n- Gracefully handle full lot edge cases when no spots are available.\n\nWhat a good submission should cover:\nYour design should show how vehicles get matched to spots, how the system tracks occupancy, and how fees are calculated for different vehicle types.",
       "expectedEntities": [
         "Vehicle",
         "Slot",
@@ -11,19 +11,19 @@
         "ParkingLot",
         "Ticket"
       ],
-      "createdAt": "2026-09-10T04:58:44.624Z"
+      "createdAt": "2026-09-10T05:21:42.032Z"
     },
     {
       "id": "prob_elevator",
       "title": "Design an Elevator System",
-      "description": "Design an elevator control system managing multiple elevator cars across multiple floors. The system should efficiently dispatch elevator requests, control floor movement, handle direction state, and manage internal/external request queues.",
+      "description": "Design a smart elevator control system managing multi-car dispatching in a high-rise building.\n\nKey Requirements:\n- Control multiple elevators across multiple floors.\n- Process internal destination buttons and external floor hall requests (up/down).\n- Efficiently dispatch requests to optimal elevators to minimize wait times.\n- Manage movement states (Idle, Moving Up, Moving Down), door logic, and queue priorities.\n\nWhat a good submission should cover:\nYour design should cover request dispatching logic, state transitions, queue handling, and class relationships between controllers, floors, and elevators.",
       "expectedEntities": [
         "Elevator",
         "Floor",
         "Request",
         "Controller"
       ],
-      "createdAt": "2026-09-10T04:58:44.625Z"
+      "createdAt": "2026-09-10T05:21:42.033Z"
     }
   ],
   "attempts": [
@@ -55,6 +55,63 @@
       },
       "createdAt": "2026-09-10T04:58:44.884Z",
       "updatedAt": "2026-09-10T04:58:45.457Z"
+    },
+    {
+      "id": "att_1789017370628_95ig4",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "Parking Lot Design\n\nHere are the main classes I've designed for this system:\n\nVehicle — a base class/interface with licensePlate and vehicleType properties. Car, Bike, and Truck classes extend Vehicle, since each vehicle type has a different size and needs a different kind of spot.\n\nSpot — represents a single parking spot. It has spotId, spotType (Small, Medium, Large), floorNumber, and isOccupied (boolean). Each Spot has a SpotType that determines which vehicles can fit into it — for example, a Bike can only park in a Small spot, and a Truck needs a Large spot.\n\nSlot — represents a group/section of spots within a floor. A Slot contains multiple Spot objects. This makes it easier to manage how many spots are free on a given floor, without having to check every individual spot.\n\nParkingLot — this is the main controller class for the whole system. It contains multiple floors, and each floor contains multiple Slots. ParkingLot is responsible for:\n\nFinding an available Spot when a vehicle enters (based on vehicle type)\nAllocating the Spot and marking it as occupied\nFreeing the Spot when the vehicle exits\nGenerating a Ticket at entry time\n\nTicket — created when a vehicle enters the lot. It stores ticketId, vehicle details, the assigned spot, and entryTime. At exit, the same Ticket is used to record exitTime and calculate the fee.\n\nFeeCalculator — a separate class/interface responsible only for calculating the parking fee, based on the difference between entryTime and exitTime, with different rates depending on vehicle type (a Truck's rate will be higher than a Bike's). I kept this as a separate class so that if the fee formula needs to change later (e.g. from hourly to daily pricing), only this class needs to be modified — the rest of the system stays untouched.\n\nHow the flow works:\n\nA vehicle enters → ParkingLot searches for a free Spot matching its vehicle type\nThe Spot is allocated and isOccupied is set to true\nA Ticket is generated with the entryTime\nThe vehicle exits → the Ticket is used to free up the Spot\nFeeCalculator computes the fee based on entry and exit time\n\nDesign decisions:\n\nVehicle was made an interface/base class so new vehicle types (like Bus) can be added easily without changing existing code — this supports extensibility\nFeeCalculator was kept separate so that pricing logic changes don't affect the rest of the system\nSpot and Slot were kept as separate classes to keep floor-level and spot-level management clean and not mixed together",
+      "feedback": {
+        "completenessScore": 100,
+        "structureScore": 54,
+        "matchedEntities": [
+          "Vehicle",
+          "Slot",
+          "Spot",
+          "ParkingLot",
+          "Ticket"
+        ],
+        "missingEntities": [],
+        "comments": [
+          "Identified core domain entities: Vehicle, Slot, Spot, ParkingLot, Ticket.",
+          "Excellent! All target domain entities were identified in your design.",
+          "Good structure-mindedness! Utilized key structural concepts: class, interface.",
+          "Detailed design provided with thorough explanations."
+        ]
+      },
+      "createdAt": "2026-09-10T05:16:10.628Z",
+      "updatedAt": "2026-09-10T05:18:03.512Z"
+    },
+    {
+      "id": "att_1789017702103_abqkx",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "Class ParkingLot with Vehicle and Slot",
+      "feedback": {
+        "completenessScore": 40,
+        "structureScore": 42,
+        "matchedEntities": [
+          "Vehicle",
+          "Slot",
+          "ParkingLot"
+        ],
+        "missingEntities": [
+          "Spot",
+          "Ticket"
+        ],
+        "comments": [
+          "Identified core domain entities: Vehicle, Slot, ParkingLot.",
+          "Consider defining or elaborating on missing key entities: Spot, Ticket.",
+          "Good structure-mindedness! Utilized key structural concepts: class.",
+          "Your submission is quite brief. Expanding on class responsibilities and method signatures will improve your score."
+        ]
+      },
+      "createdAt": "2026-09-10T05:21:42.103Z",
+      "updatedAt": "2026-09-10T05:21:42.172Z"
     }
   ]
 }
