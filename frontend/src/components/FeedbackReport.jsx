@@ -3,7 +3,15 @@ import React from 'react';
 export default function FeedbackReport({ feedback }) {
   if (!feedback) return null;
 
-  const { completenessScore, structureScore, matchedEntities = [], missingEntities = [], comments = [] } = feedback;
+  const {
+    completenessScore,
+    structureScore,
+    pseudocodeScore,
+    pseudocodeMetrics,
+    matchedEntities = [],
+    missingEntities = [],
+    comments = []
+  } = feedback;
 
   return (
     <div className="feedback-report">
@@ -23,7 +31,36 @@ export default function FeedbackReport({ feedback }) {
             {structureScore} / 100
           </span>
         </div>
+
+        {typeof pseudocodeScore === 'number' && (
+          <div className="score-card highlight">
+            <span className="score-label">Pseudocode & Logic</span>
+            <span className={`score-value ${pseudocodeScore >= 70 ? 'high' : pseudocodeScore >= 40 ? 'med' : 'low'}`}>
+              {pseudocodeScore} / 100
+            </span>
+          </div>
+        )}
       </div>
+
+      {pseudocodeMetrics && (
+        <div className="pseudocode-metrics-bar">
+          <strong>Pseudocode Metrics:</strong>
+          <div className="metrics-tags">
+            <span className="metric-tag">
+              Functions: <strong>{pseudocodeMetrics.functionsFound}</strong>
+            </span>
+            <span className="metric-tag">
+              Control Flow Blocks: <strong>{pseudocodeMetrics.controlFlowsFound}</strong>
+            </span>
+            <span className="metric-tag">
+              Data Structures: <strong>{pseudocodeMetrics.dataStructuresFound}</strong>
+            </span>
+            <span className="metric-tag">
+              Return Statements: <strong>{pseudocodeMetrics.returnsFound}</strong>
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="entities-section">
         <div className="entity-group">

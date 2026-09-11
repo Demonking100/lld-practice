@@ -36,7 +36,7 @@ router.post('/:id/submit', (req, res) => {
     return res.status(404).json({ error: `Attempt with ID '${req.params.id}' not found.` });
   }
 
-  const { submissionText, simulateFailure } = req.body || {};
+  const { submissionText, submissionType = 'text', simulateFailure } = req.body || {};
 
   // Edge case: Empty or whitespace-only submission
   if (!submissionText || typeof submissionText !== 'string' || submissionText.trim().length === 0) {
@@ -64,11 +64,12 @@ router.post('/:id/submit', (req, res) => {
       throw new Error('Simulated evaluator failure triggered for testing.');
     }
 
-    const feedback = evaluator.evaluate(submissionText, problem);
+    const feedback = evaluator.evaluate(submissionText, problem, { submissionType });
 
     const updatedAttempt = db.updateAttempt(attempt.id, {
       status: 'evaluated',
       submissionText,
+      submissionType,
       feedback
     });
 
@@ -79,6 +80,7 @@ router.post('/:id/submit', (req, res) => {
     const failedAttempt = db.updateAttempt(attempt.id, {
       status: 'failed',
       submissionText,
+      submissionType,
       feedback: null
     });
 
@@ -110,13 +112,15 @@ router.post('/:id/retry', (req, res) => {
   try {
     // If the submission text still has [SIMULATE_FAILURE], strip it during clean retry or evaluate clean text
     const cleanText = attempt.submissionText.replace('[SIMULATE_FAILURE]', '').trim();
+    const submissionType = attempt.submissionType || 'text';
     
     // Evaluate clean text
-    const feedback = evaluator.evaluate(cleanText || attempt.submissionText, problem);
+    const feedback = evaluator.evaluate(cleanText || attempt.submissionText, problem, { submissionType });
 
     const updatedAttempt = db.updateAttempt(attempt.id, {
       status: 'evaluated',
       submissionText: cleanText || attempt.submissionText,
+      submissionType,
       feedback
     });
 

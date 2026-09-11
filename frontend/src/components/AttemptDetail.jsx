@@ -95,7 +95,12 @@ export default function AttemptDetail({ attemptId, onBackToHistory, onStartNewAt
         )}
 
         <div className="submission-section">
-          <h4>Submitted Design Text</h4>
+          <div className="submission-section-header">
+            <h4>Submitted Solution Text / Code</h4>
+            {attempt.submissionType && (
+              <span className="mode-badge">{attempt.submissionType.toUpperCase()} MODE</span>
+            )}
+          </div>
           <pre className="text-display">
             {attempt.submissionText || '(No submission text provided)'}
           </pre>

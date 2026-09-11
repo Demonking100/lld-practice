@@ -424,3 +424,132 @@ textarea {
   justify-content: space-between;
   align-items: center;
 }
+
+/* Mode Selector & Pseudocode Styling */
+.mode-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: #ffffff;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.mode-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.mode-tab {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-tab:hover {
+  background: #e2e8f0;
+}
+
+.mode-tab.active {
+  background: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+}
+
+.input-group {
+  margin-bottom: 16px;
+}
+
+.pseudocode-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.template-btn {
+  background: #f8fafc;
+  border: 1px solid #94a3b8;
+  color: #1e293b;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.template-btn:hover {
+  background: #e2e8f0;
+}
+
+.pseudocode-editor {
+  background: #0f172a;
+  color: #f8fafc;
+  font-family: "Fira Code", Consolas, Monaco, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.mode-badge {
+  background: #3b82f6;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.submission-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.submission-preview .preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Pseudocode Metrics */
+.pseudocode-metrics-bar {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.metrics-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.metric-tag {
+  background: #ffffff;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+

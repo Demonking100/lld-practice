@@ -27,11 +27,11 @@ export async function startAttempt(problemId) {
   return res.json();
 }
 
-export async function submitAttempt(attemptId, submissionText, simulateFailure = false) {
+export async function submitAttempt(attemptId, submissionText, simulateFailure = false, submissionType = 'text') {
   const res = await fetch(`${API_BASE}/attempts/${attemptId}/submit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ submissionText, simulateFailure })
+    body: JSON.stringify({ submissionText, simulateFailure, submissionType })
   });
 
   const data = await res.json().catch(() => ({}));

@@ -67,4 +67,22 @@ describe('API Integration Tests', () => {
     const attemptRes = await request(app).get(`/attempts/${createdAttemptId}`);
     expect(attemptRes.body.status).toBe('evaluated');
   });
+
+  test('POST /attempts/:id/submit evaluates pseudocode submission mode correctly', async () => {
+    const attemptRes = await request(app).post('/problems/prob_parking_lot/attempts');
+    const attemptId = attemptRes.body.id;
+
+    const res = await request(app)
+      .post(`/attempts/${attemptId}/submit`)
+      .send({
+        submissionText: 'FUNCTION parkVehicle(v: Vehicle)\n  IF v IS NULL THEN RETURN null\n  RETURN new Ticket(v)',
+        submissionType: 'pseudocode'
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('evaluated');
+    expect(res.body.submissionType).toBe('pseudocode');
+    expect(res.body.feedback.pseudocodeScore).toBeDefined();
+    expect(res.body.feedback.pseudocodeMetrics.functionsFound).toBeGreaterThanOrEqual(1);
+  });
 });

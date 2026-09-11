@@ -11,7 +11,7 @@
         "ParkingLot",
         "Ticket"
       ],
-      "createdAt": "2026-09-10T05:21:42.032Z"
+      "createdAt": "2026-09-11T06:40:33.889Z"
     },
     {
       "id": "prob_elevator",
@@ -23,7 +23,7 @@
         "Request",
         "Controller"
       ],
-      "createdAt": "2026-09-10T05:21:42.033Z"
+      "createdAt": "2026-09-11T06:40:33.890Z"
     }
   ],
   "attempts": [
@@ -112,6 +112,111 @@
       },
       "createdAt": "2026-09-10T05:21:42.103Z",
       "updatedAt": "2026-09-10T05:21:42.172Z"
+    },
+    {
+      "id": "att_1789108612322_ycojd",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "Class ParkingLot with Vehicle and Slot",
+      "feedback": {
+        "completenessScore": 40,
+        "structureScore": 42,
+        "matchedEntities": [
+          "Vehicle",
+          "Slot",
+          "ParkingLot"
+        ],
+        "missingEntities": [
+          "Spot",
+          "Ticket"
+        ],
+        "comments": [
+          "Identified core domain entities: Vehicle, Slot, ParkingLot.",
+          "Consider defining or elaborating on missing key entities: Spot, Ticket.",
+          "Good structure-mindedness! Utilized key structural concepts: class.",
+          "Your submission is quite brief. Expanding on class responsibilities and method signatures will improve your score."
+        ]
+      },
+      "createdAt": "2026-09-11T06:36:52.322Z",
+      "updatedAt": "2026-09-11T06:36:52.620Z"
+    },
+    {
+      "id": "att_1789108834031_caovr",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "Class ParkingLot with Vehicle and Slot",
+      "feedback": {
+        "completenessScore": 40,
+        "structureScore": 42,
+        "pseudocodeScore": 41,
+        "matchedEntities": [
+          "Vehicle",
+          "Slot",
+          "ParkingLot"
+        ],
+        "missingEntities": [
+          "Spot",
+          "Ticket"
+        ],
+        "pseudocodeMetrics": {
+          "functionsFound": 0,
+          "controlFlowsFound": 0,
+          "dataStructuresFound": 0,
+          "returnsFound": 0
+        },
+        "comments": [
+          "Identified core domain entities: Vehicle, Slot, ParkingLot.",
+          "Consider defining or elaborating on missing key entities: Spot, Ticket.",
+          "Good structure-mindedness! Utilized key structural concepts: class.",
+          "Your submission is quite brief. Expanding on class responsibilities and method signatures will improve your score."
+        ]
+      },
+      "createdAt": "2026-09-11T06:40:34.031Z",
+      "updatedAt": "2026-09-11T06:40:34.095Z",
+      "submissionType": "text"
+    },
+    {
+      "id": "att_1789108834112_tad7t",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "FUNCTION parkVehicle(v: Vehicle)\n  IF v IS NULL THEN RETURN null\n  RETURN new Ticket(v)",
+      "feedback": {
+        "completenessScore": 30,
+        "structureScore": 30,
+        "pseudocodeScore": 55,
+        "matchedEntities": [
+          "Vehicle",
+          "Ticket"
+        ],
+        "missingEntities": [
+          "Slot",
+          "Spot",
+          "ParkingLot"
+        ],
+        "pseudocodeMetrics": {
+          "functionsFound": 1,
+          "controlFlowsFound": 1,
+          "dataStructuresFound": 0,
+          "returnsFound": 2
+        },
+        "comments": [
+          "Submission Mode: PSEUDOCODE",
+          "Identified core domain entities: Vehicle, Ticket.",
+          "Consider defining or elaborating on missing key entities: Slot, Spot, ParkingLot.",
+          "Tip: Explicitly define relationships using keywords like \"class\", \"interface\", \"extends\", or \"implements\".",
+          "Pseudocode Logic Analysis: Identified 1 function/method block(s), 1 control statement(s), and 0 data structure reference(s).",
+          "Your submission is quite brief. Expanding on class responsibilities and method signatures will improve your score."
+        ]
+      },
+      "createdAt": "2026-09-11T06:40:34.112Z",
+      "updatedAt": "2026-09-11T06:40:34.127Z",
+      "submissionType": "pseudocode"
     }
   ]
 }

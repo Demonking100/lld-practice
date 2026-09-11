@@ -3,22 +3,58 @@ import FeedbackReport from './FeedbackReport';
 import { submitAttempt, retryAttempt } from '../api';
 
 export default function ProblemWorkspace({ attempt, setAttempt, onBackToProblems }) {
-  const [submissionText, setSubmissionText] = useState(attempt?.submissionText || '');
+  const [submissionMode, setSubmissionMode] = useState(attempt?.submissionType || 'text');
+  const [textInput, setTextInput] = useState(attempt?.submissionText || '');
+  const [pseudoCodeInput, setPseudoCodeInput] = useState('');
   const [simulateFailure, setSimulateFailure] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
   if (!attempt) return <div className="error-banner">No active attempt found.</div>;
 
-  const charCount = submissionText.length;
+  const getCombinedText = () => {
+    if (submissionMode === 'text') return textInput;
+    if (submissionMode === 'pseudocode') return pseudoCodeInput;
+    
+    // Combined mode
+    const textPart = textInput.trim() ? `### Architecture & Design Notes:\n${textInput.trim()}` : '';
+    const codePart = pseudoCodeInput.trim() ? `### Pseudocode & Logic Implementation:\n\`\`\`pseudocode\n${pseudoCodeInput.trim()}\n\`\`\`` : '';
+    return [textPart, codePart].filter(Boolean).join('\n\n');
+  };
+
+  const finalSubmissionText = getCombinedText();
+  const charCount = finalSubmissionText.length;
   const isOverLimit = charCount > 5000;
+
+  const handleInsertTemplate = () => {
+    const template = `CLASS ${attempt.problem?.expectedEntities?.[0] || 'MainComponent'} {
+  PRIVATE state: String
+  
+  CONSTRUCTOR(initialState) {
+    THIS.state = initialState
+  }
+
+  FUNCTION processRequest(data) {
+    IF data IS NULL THEN
+      RETURN false
+    END IF
+    
+    FOR EACH item IN data DO
+      // Algorithm logic here
+    END FOR
+    
+    RETURN true
+  }
+}`;
+    setPseudoCodeInput(prev => (prev ? prev + '\n\n' + template : template));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg(null);
 
     // Client-side quick check
-    if (!submissionText || submissionText.trim().length === 0) {
+    if (!finalSubmissionText || finalSubmissionText.trim().length === 0) {
       setErrorMsg('Validation Error: Submission text cannot be empty or whitespace-only.');
       return;
     }
@@ -31,7 +67,7 @@ export default function ProblemWorkspace({ attempt, setAttempt, onBackToProblems
     setSubmitting(true);
 
     try {
-      const updated = await submitAttempt(attempt.id, submissionText, simulateFailure);
+      const updated = await submitAttempt(attempt.id, finalSubmissionText, simulateFailure, submissionMode);
       setAttempt(updated);
     } catch (err) {
       setErrorMsg(err.message || 'Submission failed');
@@ -93,17 +129,75 @@ export default function ProblemWorkspace({ attempt, setAttempt, onBackToProblems
 
       {attempt.status !== 'evaluated' ? (
         <form onSubmit={handleSubmit} className="submission-form">
-          <label htmlFor="design-input">
-            <strong>Your Low-Level Design (Text / Markdown format):</strong>
-          </label>
-          <textarea
-            id="design-input"
-            rows={12}
-            placeholder="Write your class design, interface definitions, entity relationships, and key algorithms here..."
-            value={submissionText}
-            onChange={(e) => setSubmissionText(e.target.value)}
-            disabled={submitting}
-          />
+          <div className="mode-selector-bar">
+            <span className="mode-label">Submission Format:</span>
+            <div className="mode-tabs">
+              <button
+                type="button"
+                className={`mode-tab ${submissionMode === 'text' ? 'active' : ''}`}
+                onClick={() => setSubmissionMode('text')}
+              >
+                📝 Text Design
+              </button>
+              <button
+                type="button"
+                className={`mode-tab ${submissionMode === 'pseudocode' ? 'active' : ''}`}
+                onClick={() => setSubmissionMode('pseudocode')}
+              >
+                💻 Pseudocode
+              </button>
+              <button
+                type="button"
+                className={`mode-tab ${submissionMode === 'combined' ? 'active' : ''}`}
+                onClick={() => setSubmissionMode('combined')}
+              >
+                🔀 Combined (Text + Pseudocode)
+              </button>
+            </div>
+          </div>
+
+          {(submissionMode === 'text' || submissionMode === 'combined') && (
+            <div className="input-group">
+              <label htmlFor="design-input">
+                <strong>Text & Architecture Explanation:</strong>
+              </label>
+              <textarea
+                id="design-input"
+                rows={submissionMode === 'combined' ? 6 : 10}
+                placeholder="Write your class design, entity relationships, trade-offs, and high-level structure..."
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+                disabled={submitting}
+              />
+            </div>
+          )}
+
+          {(submissionMode === 'pseudocode' || submissionMode === 'combined') && (
+            <div className="input-group pseudocode-group">
+              <div className="pseudocode-header-row">
+                <label htmlFor="pseudocode-input">
+                  <strong>Pseudocode / Logic Implementation:</strong>
+                </label>
+                <button
+                  type="button"
+                  className="template-btn"
+                  onClick={handleInsertTemplate}
+                  disabled={submitting}
+                >
+                  ⚡ Insert Pseudocode Template
+                </button>
+              </div>
+              <textarea
+                id="pseudocode-input"
+                className="pseudocode-editor"
+                rows={submissionMode === 'combined' ? 8 : 12}
+                placeholder={`// Write your algorithm logic or pseudocode here:\nFUNCTION processRequest(vehicle):\n  IF vehicle.type == "TRUCK" THEN\n    RETURN allocateLargeSlot()\n  END IF\n  RETURN allocateStandardSlot()`}
+                value={pseudoCodeInput}
+                onChange={(e) => setPseudoCodeInput(e.target.value)}
+                disabled={submitting}
+              />
+            </div>
+          )}
 
           <div className="form-footer">
             <span className={`char-count ${isOverLimit ? 'exceeded' : ''}`}>
@@ -117,7 +211,7 @@ export default function ProblemWorkspace({ attempt, setAttempt, onBackToProblems
                   checked={simulateFailure}
                   onChange={(e) => setSimulateFailure(e.target.checked)}
                 />
-                Simulate Evaluation Failure (Edge Case)
+                Simulate Evaluation Failure
               </label>
 
               <button
@@ -125,7 +219,7 @@ export default function ProblemWorkspace({ attempt, setAttempt, onBackToProblems
                 className="primary-btn"
                 disabled={submitting || isOverLimit}
               >
-                {submitting ? 'Evaluating...' : 'Submit Design'}
+                {submitting ? 'Evaluating...' : 'Submit for Evaluation'}
               </button>
             </div>
           </div>
@@ -133,7 +227,12 @@ export default function ProblemWorkspace({ attempt, setAttempt, onBackToProblems
       ) : (
         <div className="submitted-view">
           <div className="submission-preview">
-            <h4>Submitted Design:</h4>
+            <div className="preview-header">
+              <h4>Submitted Solution</h4>
+              {attempt.submissionType && (
+                <span className="mode-badge">{attempt.submissionType.toUpperCase()} MODE</span>
+              )}
+            </div>
             <pre className="text-display">{attempt.submissionText}</pre>
           </div>
 

@@ -9,12 +9,14 @@ const Evaluator = require('./Evaluator');
  * 3. Structure Check: Evaluates object-oriented keywords (class, interface, abstract, extends, implements, pattern names).
  */
 class RuleBasedEvaluator extends Evaluator {
-  evaluate(submissionText, problem) {
+  evaluate(submissionText, problem, options = {}) {
     if (!submissionText || typeof submissionText !== 'string') {
       throw new Error('Invalid submission text provided for evaluation.');
     }
 
+    const submissionType = options.submissionType || 'text';
     const textLower = submissionText.toLowerCase();
+    const lines = submissionText.split('\n').map(l => l.trim()).filter(Boolean);
     const words = submissionText.trim().split(/\s+/).filter(Boolean);
     const wordCount = words.length;
 
@@ -64,8 +66,51 @@ class RuleBasedEvaluator extends Evaluator {
     }
     structureScore = Math.min(100, Math.max(0, Math.round(structureScore)));
 
-    // 4. Generate Human-Readable Comments
+    // 4. Pseudocode & Algorithm Evaluation
+    const functionKeywords = ['function', 'procedure', 'method', 'def', 'func', 'algorithm', 'void'];
+    const controlFlowKeywords = ['if', 'else', 'then', 'while', 'for', 'foreach', 'switch', 'case', 'loop', 'repeat', 'until'];
+    const dataStructureKeywords = ['list', 'array', 'map', 'hashmap', 'queue', 'stack', 'node', 'tree', 'set', 'dict', 'vector'];
+    const returnKeywords = ['return', 'output', 'yield'];
+
+    let functionsFound = 0;
+    let controlFlowsFound = 0;
+    let dataStructuresFound = 0;
+    let returnsFound = 0;
+
+    lines.forEach(line => {
+      const lineLower = line.toLowerCase();
+      if (functionKeywords.some(kw => new RegExp(`\\b${kw}\\b`, 'i').test(lineLower))) {
+        functionsFound++;
+      }
+      if (controlFlowKeywords.some(kw => new RegExp(`\\b${kw}\\b`, 'i').test(lineLower))) {
+        controlFlowsFound++;
+      }
+      if (dataStructureKeywords.some(kw => new RegExp(`\\b${kw}\\b`, 'i').test(lineLower))) {
+        dataStructuresFound++;
+      }
+      if (returnKeywords.some(kw => new RegExp(`\\b${kw}\\b`, 'i').test(lineLower))) {
+        returnsFound++;
+      }
+    });
+
+    let pseudocodeScore = 0;
+    if (submissionType === 'pseudocode' || submissionType === 'combined' || functionsFound > 0 || controlFlowsFound > 0) {
+      let logicBase = 20;
+      if (functionsFound > 0) logicBase += Math.min(30, functionsFound * 15);
+      if (controlFlowsFound > 0) logicBase += Math.min(25, controlFlowsFound * 10);
+      if (dataStructuresFound > 0) logicBase += Math.min(15, dataStructuresFound * 8);
+      if (returnsFound > 0) logicBase += 10;
+      pseudocodeScore = Math.min(100, Math.max(0, Math.round(logicBase)));
+    } else {
+      pseudocodeScore = Math.min(100, Math.round((structureScore + completenessScore) / 2));
+    }
+
+    // 5. Generate Human-Readable Comments
     const comments = [];
+
+    if (submissionType === 'pseudocode' || submissionType === 'combined') {
+      comments.push(`Submission Mode: ${submissionType.toUpperCase()}`);
+    }
 
     if (matchedEntities.length > 0) {
       comments.push(`Identified core domain entities: ${matchedEntities.join(', ')}.`);
@@ -83,6 +128,12 @@ class RuleBasedEvaluator extends Evaluator {
       comments.push('Tip: Explicitly define relationships using keywords like "class", "interface", "extends", or "implements".');
     }
 
+    if (functionsFound > 0 || controlFlowsFound > 0 || dataStructuresFound > 0) {
+      comments.push(`Pseudocode Logic Analysis: Identified ${functionsFound} function/method block(s), ${controlFlowsFound} control statement(s), and ${dataStructuresFound} data structure reference(s).`);
+    } else if (submissionType === 'pseudocode') {
+      comments.push('Tip for Pseudocode: Define explicit procedures (e.g., FUNCTION reserveSlot(vehicle)) with control flows (IF/ELSE, WHILE) and return statements.');
+    }
+
     if (wordCount < 50) {
       comments.push('Your submission is quite brief. Expanding on class responsibilities and method signatures will improve your score.');
     } else if (wordCount >= 150) {
@@ -92,11 +143,19 @@ class RuleBasedEvaluator extends Evaluator {
     return {
       completenessScore,
       structureScore,
+      pseudocodeScore,
       matchedEntities,
       missingEntities,
+      pseudocodeMetrics: {
+        functionsFound,
+        controlFlowsFound,
+        dataStructuresFound,
+        returnsFound
+      },
       comments
     };
   }
 }
 
 module.exports = RuleBasedEvaluator;
+
