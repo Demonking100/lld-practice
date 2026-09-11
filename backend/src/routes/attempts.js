@@ -1,10 +1,27 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
 const RuleBasedEvaluator = require('../evaluators/RuleBasedEvaluator');
+const LLMEvaluator = require('../evaluators/LLMEvaluator');
 
-const evaluator = new RuleBasedEvaluator();
+const ruleEvaluator = new RuleBasedEvaluator();
+const llmEvaluator = new LLMEvaluator();
 const MAX_SUBMISSION_LENGTH = 5000;
+
+// Use AI evaluator if API key is present, else rule-based
+async function runEvaluation(submissionText, problem, options) {
+  if (process.env.GROQ_API_KEY) {
+    try {
+      console.log('[Evaluator] Using Groq AI evaluator...');
+      return await llmEvaluator.evaluate(submissionText, problem, options);
+    } catch (err) {
+      console.warn('[Evaluator] Groq AI failed, falling back to rule-based:', err.message);
+    }
+  }
+  console.log('[Evaluator] Using rule-based evaluator...');
+  return ruleEvaluator.evaluate(submissionText, problem, options);
+}
 
 // GET /attempts - List all attempts (history)
 router.get('/', (req, res) => {
@@ -30,7 +47,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /attempts/:id/submit - Submit text and trigger evaluation
-router.post('/:id/submit', (req, res) => {
+router.post('/:id/submit', async (req, res) => {
   const attempt = db.getAttemptById(req.params.id);
   if (!attempt) {
     return res.status(404).json({ error: `Attempt with ID '${req.params.id}' not found.` });
@@ -45,10 +62,11 @@ router.post('/:id/submit', (req, res) => {
     });
   }
 
-  // Edge case: Extremely long submission (>5000 chars)
-  if (submissionText.length > MAX_SUBMISSION_LENGTH) {
+  // Edge case: Extremely long submission (>5000 non-whitespace chars)
+  const nonSpaceLength = submissionText.replace(/\s/g, '').length;
+  if (nonSpaceLength > MAX_SUBMISSION_LENGTH) {
     return res.status(400).json({
-      error: `Validation Error: Submission exceeds maximum limit of ${MAX_SUBMISSION_LENGTH} characters (Current length: ${submissionText.length}).`
+      error: `Validation Error: Submission exceeds maximum limit of ${MAX_SUBMISSION_LENGTH} characters (Current length: ${nonSpaceLength}).`
     });
   }
 
@@ -64,7 +82,7 @@ router.post('/:id/submit', (req, res) => {
       throw new Error('Simulated evaluator failure triggered for testing.');
     }
 
-    const feedback = evaluator.evaluate(submissionText, problem, { submissionType });
+    const feedback = await runEvaluation(submissionText, problem, { submissionType });
 
     const updatedAttempt = db.updateAttempt(attempt.id, {
       status: 'evaluated',
@@ -92,7 +110,7 @@ router.post('/:id/submit', (req, res) => {
 });
 
 // POST /attempts/:id/retry - Retry evaluation on a failed attempt
-router.post('/:id/retry', (req, res) => {
+router.post('/:id/retry', async (req, res) => {
   const attempt = db.getAttemptById(req.params.id);
   if (!attempt) {
     return res.status(404).json({ error: `Attempt with ID '${req.params.id}' not found.` });
@@ -115,7 +133,7 @@ router.post('/:id/retry', (req, res) => {
     const submissionType = attempt.submissionType || 'text';
     
     // Evaluate clean text
-    const feedback = evaluator.evaluate(cleanText || attempt.submissionText, problem, { submissionType });
+    const feedback = await runEvaluation(cleanText || attempt.submissionText, problem, { submissionType });
 
     const updatedAttempt = db.updateAttempt(attempt.id, {
       status: 'evaluated',

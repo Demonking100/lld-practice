@@ -11,7 +11,7 @@
         "ParkingLot",
         "Ticket"
       ],
-      "createdAt": "2026-09-11T06:40:33.889Z"
+      "createdAt": "2026-09-11T08:25:18.417Z"
     },
     {
       "id": "prob_elevator",
@@ -23,7 +23,7 @@
         "Request",
         "Controller"
       ],
-      "createdAt": "2026-09-11T06:40:33.890Z"
+      "createdAt": "2026-09-11T08:25:18.418Z"
     }
   ],
   "attempts": [
@@ -216,6 +216,243 @@
       },
       "createdAt": "2026-09-11T06:40:34.112Z",
       "updatedAt": "2026-09-11T06:40:34.127Z",
+      "submissionType": "pseudocode"
+    },
+    {
+      "id": "att_1789109527476_2f2om",
+      "problemId": "prob_elevator",
+      "problemTitle": "Design an Elevator System",
+      "learnerId": "default_learner",
+      "status": "in_progress",
+      "submissionText": "",
+      "feedback": null,
+      "createdAt": "2026-09-11T06:52:07.476Z",
+      "updatedAt": "2026-09-11T06:52:07.476Z"
+    },
+    {
+      "id": "att_1789109842026_iozoq",
+      "problemId": "prob_elevator",
+      "problemTitle": "Design an Elevator System",
+      "learnerId": "default_learner",
+      "status": "in_progress",
+      "submissionText": "",
+      "feedback": null,
+      "createdAt": "2026-09-11T06:57:22.026Z",
+      "updatedAt": "2026-09-11T06:57:22.026Z"
+    },
+    {
+      "id": "att_1789109974194_behvs",
+      "problemId": "prob_elevator",
+      "problemTitle": "Design an Elevator System",
+      "learnerId": "default_learner",
+      "status": "in_progress",
+      "submissionText": "",
+      "feedback": null,
+      "createdAt": "2026-09-11T06:59:34.194Z",
+      "updatedAt": "2026-09-11T06:59:34.194Z"
+    },
+    {
+      "id": "att_1789109980105_zfpl6",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "ENUM VehicleType { BIKE, CAR, TRUCK }\nENUM SpotSize { SMALL, MEDIUM, LARGE }\n\nCLASS Vehicle {\n    number\n    type\n\n    CONSTRUCTOR(number, type) {\n        this.number = number\n        this.type = type\n    }\n}\n\nCLASS Spot {\n    id\n    floor\n    size\n    vehicle = NULL\n\n    CONSTRUCTOR(id, floor, size) {\n        this.id = id\n        this.floor = floor\n        this.size = size\n    }\n\n    isAvailable() {\n        RETURN vehicle == NULL\n    }\n\n    canFit(v) {\n        IF v.type == BIKE\n            RETURN size IN {SMALL, MEDIUM, LARGE}\n        IF v.type == CAR\n            RETURN size IN {MEDIUM, LARGE}\n        IF v.type == TRUCK\n            RETURN size == LARGE\n    }\n}\n\nCLASS Ticket {\n    id\n    vehicle\n    spot\n    entryTime\n    exitTime = NULL\n\n    CONSTRUCTOR(id, vehicle, spot) {\n        this.id = id\n        this.vehicle = vehicle\n        this.spot = spot\n        entryTime = CURRENT_TIME\n    }\n}\n\nCLASS ParkingFloor {\n    number\n    spots = LIST()\n\n    addSpot(spot) {\n        spots.add(spot)\n    }\n\n    findSpot(vehicle) {\n        FOR EACH spot IN spots {\n            IF spot.isAvailable() AND spot.canFit(vehicle)\n                RETURN spot\n        }\n        RETURN NULL\n    }\n\n    availableCount() {\n        count = 0\n        FOR EACH spot IN spots\n            IF spot.isAvailable()\n                count++\n        RETURN count\n    }\n}\n\nCLASS ParkingLot {\n    floors = LIST()\n    activeTickets = MAP()\n    nextTicketId = 1\n\n    addFloor(floor) {\n        floors.add(floor)\n    }\n\n    park(vehicle) {\n        spot = findBestSpot(vehicle)\n\n        IF spot == NULL\n            RETURN \"PARKING_FULL\"\n\n        spot.vehicle = vehicle\n\n        ticket = new Ticket(\n            nextTicketId++,\n            vehicle,\n            spot\n        )\n\n        activeTickets[ticket.id] = ticket\n        RETURN ticket\n    }\n\n    findBestSpot(vehicle) {\n        // Prefer the smallest suitable spot\n        FOR EACH floor IN floors {\n            spot = floor.findSpot(vehicle)\n            IF spot != NULL\n                RETURN spot\n        }\n        RETURN NULL\n    }\n\n    exit(ticketId) {\n        IF NOT activeTickets.contains(ticketId)\n            RETURN \"INVALID_TICKET\"\n\n        ticket = activeTickets[ticketId]\n        ticket.exitTime = CURRENT_TIME\n\n        duration = ticket.exitTime - ticket.entryTime\n        fee = calculateFee(ticket.vehicle.type, duration)\n\n        ticket.spot.vehicle = NULL\n        activeTickets.remove(ticketId)\n\n        RETURN fee\n    }\n\n    calculateFee(type, duration) {\n        hours = CEIL(duration / 1 HOUR)\n\n        IF type == BIKE\n            RETURN hours * 20\n\n        IF type == CAR\n            RETURN hours * 40\n\n        IF type == TRUCK\n            RETURN hours * 80\n    }\n\n    getAvailableSpots() {\n        total = 0\n        FOR EACH floor IN floors\n            total += floor.availableCount()\n        RETURN total\n    }\n}\n\n\n// FLOW:\n//\n// Vehicle enters\n//      ↓\n// ParkingLot.park()\n//      ↓\n// Find smallest suitable available Spot\n//      ↓\n// Assign Spot + create Ticket\n//      ↓\n// Store Ticket and mark Spot occupied\n//\n// Vehicle exits\n//      ↓\n// Ticket ID validated\n//      ↓\n// Calculate parking duration\n//      ↓\n// Calculate fee by VehicleType\n//      ↓\n// Free Spot + remove Ticket\n//\n// If no suitable Spot exists:\n// RETURN \"PARKING_FULL\"",
+      "feedback": {
+        "completenessScore": 90,
+        "structureScore": 54,
+        "pseudocodeScore": 70,
+        "matchedEntities": [
+          "Vehicle",
+          "Spot",
+          "ParkingLot",
+          "Ticket"
+        ],
+        "missingEntities": [
+          "Slot"
+        ],
+        "pseudocodeMetrics": {
+          "functionsFound": 0,
+          "controlFlowsFound": 16,
+          "dataStructuresFound": 3,
+          "returnsFound": 18
+        },
+        "comments": [
+          "Submission Mode: PSEUDOCODE",
+          "Identified core domain entities: Vehicle, Spot, ParkingLot, Ticket.",
+          "Consider defining or elaborating on missing key entities: Slot.",
+          "Good structure-mindedness! Utilized key structural concepts: class, enum.",
+          "Pseudocode Logic Analysis: Identified 0 function/method block(s), 16 control statement(s), and 3 data structure reference(s).",
+          "Detailed design provided with thorough explanations."
+        ]
+      },
+      "createdAt": "2026-09-11T06:59:40.105Z",
+      "updatedAt": "2026-09-11T06:59:50.370Z",
+      "submissionType": "pseudocode"
+    },
+    {
+      "id": "att_1789110254884_25810",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "in_progress",
+      "submissionText": "",
+      "feedback": null,
+      "createdAt": "2026-09-11T07:04:14.884Z",
+      "updatedAt": "2026-09-11T07:04:14.884Z"
+    },
+    {
+      "id": "att_1789110438858_ixrte",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "ENUM VehicleType { BIKE, CAR, TRUCK }\nENUM SpotSize { SMALL, MEDIUM, LARGE }\n\nCLASS Vehicle {\n    number\n    type\n\n    CONSTRUCTOR(number, type) {\n        this.number = number\n        this.type = type\n    }\n}\n\nCLASS Spot {\n    id\n    size\n    vehicle = NULL\n\n    CONSTRUCTOR(id, size) {\n        this.id = id\n        this.size = size\n    }\n\n    isAvailable() {\n        RETURN vehicle == NULL\n    }\n\n    canFit(vehicle) {\n        IF vehicle.type == BIKE\n            RETURN true\n        IF vehicle.type == CAR\n            RETURN size == MEDIUM OR size == LARGE\n        IF vehicle.type == TRUCK\n            RETURN size == LARGE\n        RETURN false\n    }\n\n    assign(vehicle) {\n        this.vehicle = vehicle\n    }\n\n    release() {\n        vehicle = NULL\n    }\n}\n\nCLASS Slot {\n    floorNumber\n    spots = LIST()\n\n    CONSTRUCTOR(floorNumber) {\n        this.floorNumber = floorNumber\n    }\n\n    addSpot(spot) {\n        spots.add(spot)\n    }\n\n    findBestSpot(vehicle) {\n        best = NULL\n\n        FOR EACH spot IN spots {\n            IF spot.isAvailable() AND spot.canFit(vehicle) {\n                IF best == NULL OR spot.size < best.size\n                    best = spot\n            }\n        }\n        RETURN best\n    }\n\n    availableCount() {\n        count = 0\n        FOR EACH spot IN spots\n            IF spot.isAvailable()\n                count++\n        RETURN count\n    }\n}\n\nCLASS Ticket {\n    id\n    vehicle\n    spot\n    entryTime\n    exitTime = NULL\n\n    CONSTRUCTOR(id, vehicle, spot) {\n        this.id = id\n        this.vehicle = vehicle\n        this.spot = spot\n        entryTime = CURRENT_TIME\n    }\n}\n\nCLASS ParkingLot {\n    slots = LIST()\n    activeTickets = MAP()\n    nextTicketId = 1\n\n    addSlot(slot) {\n        slots.add(slot)\n    }\n\n    findBestSpot(vehicle) {\n        best = NULL\n\n        FOR EACH slot IN slots {\n            spot = slot.findBestSpot(vehicle)\n\n            IF spot != NULL {\n                IF best == NULL OR spot.size < best.size\n                    best = spot\n            }\n        }\n        RETURN best\n    }\n\n    park(vehicle) {\n        spot = findBestSpot(vehicle)\n\n        IF spot == NULL\n            RETURN \"PARKING_FULL\"\n\n        spot.assign(vehicle)\n\n        ticket = new Ticket(\n            nextTicketId++,\n            vehicle,\n            spot\n        )\n\n        activeTickets[ticket.id] = ticket\n        RETURN ticket\n    }\n\n    exit(ticketId) {\n        IF NOT activeTickets.contains(ticketId)\n            RETURN \"INVALID_TICKET\"\n\n        ticket = activeTickets[ticketId]\n        ticket.exitTime = CURRENT_TIME\n\n        duration = ticket.exitTime - ticket.entryTime\n        fee = calculateFee(ticket.vehicle.type, duration)\n\n        ticket.spot.release()\n        activeTickets.remove(ticketId)\n\n        RETURN fee\n    }\n\n    calculateFee(type, duration) {\n        hours = CEIL(duration / 1 HOUR)\n\n        IF type == BIKE\n            RETURN hours * 20\n\n        IF type == CAR\n            RETURN hours * 40\n\n        IF type == TRUCK\n            RETURN hours * 80\n    }\n\n    getAvailability() {\n        result = MAP()\n\n        FOR EACH slot IN slots\n            result[slot.floorNumber] = slot.availableCount()\n\n        RETURN result\n    }\n}\n\n// FLOW:\n// Vehicle enters\n// -> ParkingLot.findBestSpot()\n// -> Slot finds compatible Spot\n// -> Spot is assigned to Vehicle\n// -> Ticket created with timestamp\n//\n// Vehicle exits\n// -> Ticket validated\n// -> Duration calculated\n// -> Fee calculated by vehicle type\n// -> Spot released\n// -> Ticket removed\n//\n// If no compatible spot exists:\n// RETURN \"PARKING_FULL\"",
+      "feedback": {
+        "completenessScore": 100,
+        "structureScore": 54,
+        "pseudocodeScore": 70,
+        "matchedEntities": [
+          "Vehicle",
+          "Slot",
+          "Spot",
+          "ParkingLot",
+          "Ticket"
+        ],
+        "missingEntities": [],
+        "pseudocodeMetrics": {
+          "functionsFound": 0,
+          "controlFlowsFound": 18,
+          "dataStructuresFound": 4,
+          "returnsFound": 17
+        },
+        "comments": [
+          "Submission Mode: PSEUDOCODE",
+          "Identified core domain entities: Vehicle, Slot, Spot, ParkingLot, Ticket.",
+          "Excellent! All target domain entities were identified in your design.",
+          "Good structure-mindedness! Utilized key structural concepts: class, enum.",
+          "Pseudocode Logic Analysis: Identified 0 function/method block(s), 18 control statement(s), and 4 data structure reference(s).",
+          "Detailed design provided with thorough explanations."
+        ]
+      },
+      "createdAt": "2026-09-11T07:07:18.858Z",
+      "updatedAt": "2026-09-11T07:08:14.803Z",
+      "submissionType": "pseudocode"
+    },
+    {
+      "id": "att_1789110565125_0inps",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "ENUM VehicleType { BIKE, CAR, TRUCK }\nENUM SpotSize { SMALL, MEDIUM, LARGE }\n\nCLASS Vehicle {\n    number\n    type\n\n    CONSTRUCTOR(number, type) {\n        this.number = number\n        this.type = type\n    }\n}\n\nCLASS Spot {\n    id\n    size\n    vehicle = NULL\n\n    CONSTRUCTOR(id, size) {\n        this.id = id\n        this.size = size\n    }\n\n    isAvailable() {\n        RETURN vehicle == NULL\n    }\n\n    canFit(vehicle) {\n        IF vehicle.type == BIKE\n            RETURN true\n        IF vehicle.type == CAR\n            RETURN size == MEDIUM OR size == LARGE\n        IF vehicle.type == TRUCK\n            RETURN size == LARGE\n        RETURN false\n    }\n\n    assign(vehicle) {\n        this.vehicle = vehicle\n    }\n\n    release() {\n        vehicle = NULL\n    }\n}\n\nCLASS Slot {\n    floorNumber\n    spots = LIST()\n\n    CONSTRUCTOR(floorNumber) {\n        this.floorNumber = floorNumber\n    }\n\n    addSpot(spot) {\n        spots.add(spot)\n    }\n\n    findBestSpot(vehicle) {\n        best = NULL\n\n        FOR EACH spot IN spots {\n            IF spot.isAvailable() AND spot.canFit(vehicle) {\n                IF best == NULL OR spot.size < best.size\n                    best = spot\n            }\n        }\n        RETURN best\n    }\n\n    availableCount() {\n        count = 0\n        FOR EACH spot IN spots\n            IF spot.isAvailable()\n                count++\n        RETURN count\n    }\n}\n\nCLASS Ticket {\n    id\n    vehicle\n    spot\n    entryTime\n    exitTime = NULL\n\n    CONSTRUCTOR(id, vehicle, spot) {\n        this.id = id\n        this.vehicle = vehicle\n        this.spot = spot\n        entryTime = CURRENT_TIME\n    }\n}\n\nCLASS ParkingLot {\n    slots = LIST()\n    activeTickets = MAP()\n    nextTicketId = 1\n\n    addSlot(slot) {\n        slots.add(slot)\n    }\n\n    findBestSpot(vehicle) {\n        best = NULL\n\n        FOR EACH slot IN slots {\n            spot = slot.findBestSpot(vehicle)\n\n            IF spot != NULL {\n                IF best == NULL OR spot.size < best.size\n                    best = spot\n            }\n        }\n        RETURN best\n    }\n\n    park(vehicle) {\n        spot = findBestSpot(vehicle)\n\n        IF spot == NULL\n            RETURN \"PARKING_FULL\"\n\n        spot.assign(vehicle)\n\n        ticket = new Ticket(\n            nextTicketId++,\n            vehicle,\n            spot\n        )\n\n        activeTickets[ticket.id] = ticket\n        RETURN ticket\n    }\n\n    exit(ticketId) {\n        IF NOT activeTickets.contains(ticketId)\n            RETURN \"INVALID_TICKET\"\n\n        ticket = activeTickets[ticketId]\n        ticket.exitTime = CURRENT_TIME\n\n        duration = ticket.exitTime - ticket.entryTime\n        fee = calculateFee(ticket.vehicle.type, duration)\n\n        ticket.spot.release()\n        activeTickets.remove(ticketId)\n\n        RETURN fee\n    }\n\n    calculateFee(type, duration) {\n        hours = CEIL(duration / 1 HOUR)\n\n        IF type == BIKE\n            RETURN hours * 20\n\n        IF type == CAR\n            RETURN hours * 40\n\n        IF type == TRUCK\n            RETURN hours * 80\n    }\n\n    getAvailability() {\n        result = MAP()\n\n        FOR EACH slot IN slots\n            result[slot.floorNumber] = slot.availableCount()\n\n        RETURN result\n    }\n}\n\n// FLOW:\n// Vehicle enters\n// -> ParkingLot.findBestSpot()\n// -> Slot finds compatible Spot\n// -> Spot is assigned to Vehicle\n// -> Ticket created with timestamp\n//\n// Vehicle exits\n// -> Ticket validated\n// -> Duration calculated\n// -> Fee calculated by vehicle type\n// -> Spot released\n// -> Ticket removed\n//\n// If no compatible spot exists:\n// RETURN \"PARKING_FULL\"",
+      "feedback": {
+        "completenessScore": 100,
+        "structureScore": 54,
+        "pseudocodeScore": 70,
+        "matchedEntities": [
+          "Vehicle",
+          "Slot",
+          "Spot",
+          "ParkingLot",
+          "Ticket"
+        ],
+        "missingEntities": [],
+        "pseudocodeMetrics": {
+          "functionsFound": 0,
+          "controlFlowsFound": 18,
+          "dataStructuresFound": 4,
+          "returnsFound": 17
+        },
+        "comments": [
+          "Submission Mode: PSEUDOCODE",
+          "Identified core domain entities: Vehicle, Slot, Spot, ParkingLot, Ticket.",
+          "Excellent! All target domain entities were identified in your design.",
+          "Good structure-mindedness! Utilized key structural concepts: class, enum.",
+          "Pseudocode Logic Analysis: Identified 0 function/method block(s), 18 control statement(s), and 4 data structure reference(s).",
+          "Detailed design provided with thorough explanations."
+        ]
+      },
+      "createdAt": "2026-09-11T07:09:25.125Z",
+      "updatedAt": "2026-09-11T07:09:38.082Z",
+      "submissionType": "pseudocode"
+    },
+    {
+      "id": "att_1789115117952_qgfd5",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "CLASS Vehicle {\n  PRIVATE state: String\n  \n  CONSTRUCTOR(initialState) {\n    THIS.state = initialState\n  }\n\n  FUNCTION processRequest(data) {\n    IF data IS NULL THEN\n      RETURN false\n    END IF\n    \n    FOR EACH item IN data DO\n      // Algorithm logic here\n    END FOR\n    \n    RETURN true\n  }\n}",
+      "feedback": {
+        "completenessScore": 30,
+        "structureScore": 42,
+        "pseudocodeScore": 85,
+        "matchedEntities": [
+          "Vehicle"
+        ],
+        "missingEntities": [
+          "Slot",
+          "Spot",
+          "ParkingLot",
+          "Ticket"
+        ],
+        "pseudocodeMetrics": {
+          "functionsFound": 2,
+          "controlFlowsFound": 4,
+          "dataStructuresFound": 0,
+          "returnsFound": 2
+        },
+        "comments": [
+          "Submission Mode: PSEUDOCODE",
+          "Identified core domain entities: Vehicle.",
+          "Consider defining or elaborating on missing key entities: Slot, Spot, ParkingLot, Ticket.",
+          "Good structure-mindedness! Utilized key structural concepts: class.",
+          "Pseudocode Logic Analysis: Identified 2 function/method block(s), 4 control statement(s), and 0 data structure reference(s).",
+          "Your submission is quite brief. Expanding on class responsibilities and method signatures will improve your score."
+        ]
+      },
+      "createdAt": "2026-09-11T08:25:17.952Z",
+      "updatedAt": "2026-09-11T08:28:20.772Z",
+      "submissionType": "pseudocode"
+    },
+    {
+      "id": "att_1789115319673_00dpp",
+      "problemId": "prob_parking_lot",
+      "problemTitle": "Design a Parking Lot",
+      "learnerId": "default_learner",
+      "status": "evaluated",
+      "submissionText": "enum VehicleType { CAR, BIKE, TRUCK }\nenum SpotSize { SMALL, MEDIUM, LARGE }\n\nabstract class Vehicle {\n    private String licensePlate;\n    private VehicleType type;\n    \n    public abstract SpotSize getRequiredSpotSize();\n}\n\nclass Car extends Vehicle {\n    public SpotSize getRequiredSpotSize() { return SpotSize.MEDIUM; }\n}\n\nclass Bike extends Vehicle {\n    public SpotSize getRequiredSpotSize() { return SpotSize.SMALL; }\n}\n\nclass Truck extends Vehicle {\n    public SpotSize getRequiredSpotSize() { return SpotSize.LARGE; }\n}\n\nclass Spot {\n    private String spotId;\n    private SpotSize size;\n    private int floorNumber;\n    private boolean isOccupied;\n\n    public boolean canFitVehicle(Vehicle vehicle) {\n        return !isOccupied && this.size == vehicle.getRequiredSpotSize();\n    }\n\n    public void occupy() { isOccupied = true; }\n    public void vacate() { isOccupied = false; }\n}\n\nclass Floor {\n    private int floorNumber;\n    private List<Spot> spots;\n\n    // real-time tracking of occupancy\n    public int getAvailableSpotCount(SpotSize size) {\n        // count spots where isOccupied == false and size matches\n    }\n\n    public Spot findAvailableSpot(Vehicle vehicle) {\n        for (Spot spot : spots) {\n            if (spot.canFitVehicle(vehicle)) {\n                return spot;\n            }\n        }\n        return null; // no spot found on this floor\n    }\n}\n\nclass Ticket {\n    private String ticketId;\n    private Vehicle vehicle;\n    private Spot assignedSpot;\n    private LocalDateTime entryTime;\n    private LocalDateTime exitTime;\n\n    public Ticket(Vehicle vehicle, Spot spot) {\n        this.vehicle = vehicle;\n        this.assignedSpot = spot;\n        this.entryTime = LocalDateTime.now();\n    }\n}\n\ninterface FeeCalculator {\n    double calculateFee(Ticket ticket);\n}\n\nclass HourlyFeeCalculator implements FeeCalculator {\n    private Map<VehicleType, Double> ratePerHour;\n\n    public double calculateFee(Ticket ticket) {\n        Duration duration = Duration.between(ticket.entryTime, ticket.exitTime);\n        double hours = Math.ceil(duration.toMinutes() / 60.0);\n        double rate = ratePerHour.get(ticket.vehicle.getType());\n        return hours * rate;\n    }\n}\n\nclass ParkingFullException extends Exception {\n    public ParkingFullException(String message) {\n        super(message);\n    }\n}\n\nclass ParkingLot {\n    private List<Floor> floors;\n    private FeeCalculator feeCalculator;\n    private Map<String, Ticket> activeTickets; // ticketId -> Ticket\n\n    public Ticket parkVehicle(Vehicle vehicle) throws ParkingFullException {\n        Spot foundSpot = null;\n\n        // search across all floors for an available spot\n        for (Floor floor : floors) {\n            Spot spot = floor.findAvailableSpot(vehicle);\n            if (spot != null) {\n                foundSpot = spot;\n                break;\n            }\n        }\n\n        // edge case: no spot available anywhere\n        if (foundSpot == null) {\n            throw new ParkingFullException(\n                \"No available spot for vehicle type: \" + vehicle.getType()\n            );\n        }\n\n        foundSpot.occupy();\n        Ticket ticket = new Ticket(vehicle, foundSpot);\n        activeTickets.put(ticket.ticketId, ticket);\n        return ticket;\n    }\n\n    public double exitVehicle(String ticketId) throws Exception {\n        Ticket ticket = activeTickets.get(ticketId);\n        \n        if (ticket == null) {\n            throw new Exception(\"Invalid ticket\");\n        }\n\n        ticket.exitTime = LocalDateTime.now();\n        double fee = feeCalculator.calculateFee(ticket);\n\n        ticket.assignedSpot.vacate();\n        activeTickets.remove(ticketId);\n\n        return fee;\n    }\n\n    public Map<SpotSize, Integer> getAvailabilitySummary() {\n        // aggregate available spot counts per size across all floors\n        // used for real-time occupancy tracking / dashboard\n    }\n}",
+      "feedback": {
+        "completenessScore": 90,
+        "structureScore": 100,
+        "pseudocodeScore": 100,
+        "matchedEntities": [
+          "Vehicle",
+          "Spot",
+          "ParkingLot",
+          "Ticket"
+        ],
+        "missingEntities": [
+          "Slot"
+        ],
+        "pseudocodeMetrics": {
+          "functionsFound": 2,
+          "controlFlowsFound": 10,
+          "dataStructuresFound": 5,
+          "returnsFound": 9
+        },
+        "comments": [
+          "Submission Mode: PSEUDOCODE",
+          "Identified core domain entities: Vehicle, Spot, ParkingLot, Ticket.",
+          "Consider defining or elaborating on missing key entities: Slot.",
+          "Good structure-mindedness! Utilized key structural concepts: class, interface, abstract, extends, implements, enum.",
+          "Pseudocode Logic Analysis: Identified 2 function/method block(s), 10 control statement(s), and 5 data structure reference(s).",
+          "Detailed design provided with thorough explanations."
+        ]
+      },
+      "createdAt": "2026-09-11T08:28:39.673Z",
+      "updatedAt": "2026-09-11T08:28:45.651Z",
       "submissionType": "pseudocode"
     }
   ]

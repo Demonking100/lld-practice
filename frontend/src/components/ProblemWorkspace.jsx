@@ -23,7 +23,7 @@ export default function ProblemWorkspace({ attempt, setAttempt, onBackToProblems
   };
 
   const finalSubmissionText = getCombinedText();
-  const charCount = finalSubmissionText.length;
+  const charCount = finalSubmissionText.replace(/\s/g, '').length;
   const isOverLimit = charCount > 5000;
 
   const handleInsertTemplate = () => {
@@ -201,7 +201,7 @@ export default function ProblemWorkspace({ attempt, setAttempt, onBackToProblems
 
           <div className="form-footer">
             <span className={`char-count ${isOverLimit ? 'exceeded' : ''}`}>
-              {charCount} / 5000 characters
+              {charCount} / 5000 characters (excluding spaces)
             </span>
 
             <div className="form-actions">
